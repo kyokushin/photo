@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.viewholders.PhotoGridViewHolder
 import com.yutasuz.photo.viewholders.SearchViewHolder
@@ -26,9 +27,13 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
 
     interface Item {
         val type: Type
+        val isFix: Boolean
 
-        class SearchItem : Item {
+        class SearchItem(
+            val onQueryTextListener: SearchView.OnQueryTextListener
+        ) : Item {
             override val type = Type.Search
+            override val isFix = true
         }
 
         data class PhotoGridItem(
@@ -37,6 +42,7 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
             val onClickListener: View.OnClickListener
         ) : Item {
             override val type = Type.PhotoGrid
+            override val isFix = false
         }
     }
 
@@ -59,6 +65,7 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
                 holder as SearchViewHolder
                 item as Item.SearchItem
 
+                holder.onBind(item.onQueryTextListener)
             }
             Type.PhotoGrid -> {
                 holder as PhotoGridViewHolder

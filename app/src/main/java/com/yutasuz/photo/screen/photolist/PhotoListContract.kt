@@ -18,6 +18,8 @@ interface PhotoListContract {
         fun notifyDataSetChanged()
 
         fun notifyItemRangeChanged(positionStart: Int, itemCount: Int)
+
+        fun hideRefresh()
     }
 
     interface Presenter {
@@ -40,7 +42,7 @@ interface PhotoListContract {
 
     interface Repository {
 
-        fun getFlickrSearch(keyword: String, page: Int): Single<FlickrPhotosResultResponse>
+        fun getFlickrSearch(text: String, page: Int): Single<FlickrPhotosResultResponse>
 
         fun getFlickrRecent(page: Int): Single<FlickrPhotosResultResponse>
     }

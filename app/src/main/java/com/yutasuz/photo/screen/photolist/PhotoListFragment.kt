@@ -85,4 +85,8 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun notifyItemRangeChanged(positionStart: Int, itemCount: Int) {
         photoListAdapter.notifyItemRangeChanged(positionStart, itemCount)
     }
+
+    override fun hideRefresh() {
+        if(refresh.isRefreshing) refresh.isRefreshing = false
+    }
 }
