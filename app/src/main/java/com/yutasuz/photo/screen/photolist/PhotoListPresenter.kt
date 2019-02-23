@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,36 +25,6 @@ class PhotoListPresenter(
         }
     }
 
-    interface RequestState {
-        var requested: Boolean
-        fun request(page: Int)
-        fun setResult(itemList: List<PhotoListAdapter.Item>)
-        fun addResult(itemList: List<PhotoListAdapter.Item>)
-    }
-
-    inner class SearchRequest(private val text: String) : RequestState {
-        override var requested = false
-
-
-        override fun request(page: Int) = requestFlickrSearch(text, page)
-        override fun setResult(itemList: List<PhotoListAdapter.Item>) {}
-        override fun addResult(itemList: List<PhotoListAdapter.Item>) {}
-    }
-
-    inner class RecentRequest() : RequestState {
-        override var requested = false
-
-        val result = arrayListOf<PhotoListAdapter.Item>()
-
-        override fun request(page: Int) = requestFlickrRecent(page)
-        override fun setResult(itemList: List<PhotoListAdapter.Item>) {
-            result.clear()
-            result.addAll(itemList)
-        }
-        override fun addResult(itemList: List<PhotoListAdapter.Item>) {
-            result.addAll(itemList)
-        }
-    }
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -64,19 +33,15 @@ class PhotoListPresenter(
 
     private var pagination: Pagination? = null
 
-    private val recentRequest = RecentRequest()
-    private var searchRequest: SearchRequest? = null
-    private val currentRequest: RequestState
-        get() {
-            return searchRequest ?: recentRequest
-        }
+    private val photoRequestState = PhotoRequestState(repository)
+
 
     init {
         val searchItem = PhotoListAdapter.Item.SearchItem(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     query?.let {
-                        searchRequest = SearchRequest(query)
+                        photoRequestState.setSearchText(query)
                         requestFirstPage()
                     }
                     return true
@@ -84,11 +49,8 @@ class PhotoListPresenter(
 
                 override fun onQueryTextChange(newText: String?) : Boolean {
                     if(newText != null && newText.isEmpty()){
-                        searchRequest = null
+                        photoRequestState.clearSearch()
                         requestFirstPageIfNotRequested()
-                        removeNotFixItems()
-                        itemList.addAll(recentRequest.result)
-                        view.notifyDataSetChanged()
                     }
                     return false
                 }
@@ -121,22 +83,32 @@ class PhotoListPresenter(
     }
 
     private fun requestFirstPageIfNotRequested() {
-        if (currentRequest.requested) return
+        if (photoRequestState.requested){
+            removeNotFixItems()
+            if(photoRequestState.hasResult()){
+                itemList.addAll(photoRequestState.result)
+            }
+            view.notifyDataSetChanged()
+
+            return
+        }
+
         requestFirstPage()
     }
 
     private fun requestFirstPage() {
-        currentRequest.request(1)
+        request(1)
     }
 
     private fun requestNextPage() {
         val pagination = pagination
         if (pagination == null || !pagination.hasNextPage()) return
-        currentRequest.request(pagination.nextPage())
+        request(pagination.nextPage())
     }
 
-    private fun requestFlickrSearch(text: String, page: Int) {
-        val disposable = repository.getFlickrSearch(text, page)
+    private fun request(page: Int){
+        val single = photoRequestState.request(page) ?: return
+        val disposable = single
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -152,22 +124,6 @@ class PhotoListPresenter(
         compositeDisposable.add(disposable)
     }
 
-    private fun requestFlickrRecent(page: Int) {
-        val disposable = repository.getFlickrRecent(page)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    receiveResponse(it)
-                    view.hideRefresh()
-                },
-                {
-                    Log.e("flickr_api", "exception", it)
-                }
-            )
-
-        compositeDisposable.add(disposable)
-    }
 
     private fun receiveResponse(photosResult: FlickrPhotosResultResponse) {
         val photos = photosResult.photos ?: return
@@ -202,13 +158,14 @@ class PhotoListPresenter(
                 val startPosition = itemList.size
                 val itemCount = items.size
                 itemList.addAll(items)
-                currentRequest.addResult(items)
+                photoRequestState.result.addAll(items)
                 view.notifyItemRangeChanged(startPosition, itemCount)
             }
             receivedPage == 1 -> {
                 removeNotFixItems()
                 itemList.addAll(items)
-                currentRequest.setResult(items)
+                photoRequestState.result.clear()
+                photoRequestState.result.addAll(items)
                 view.notifyDataSetChanged()
             }
             else -> {
@@ -216,7 +173,7 @@ class PhotoListPresenter(
             }
         }
 
-        currentRequest.requested = true
+        photoRequestState.requested = true
     }
 
     private fun removeNotFixItems() {
