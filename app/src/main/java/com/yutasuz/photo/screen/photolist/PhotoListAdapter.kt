@@ -9,7 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.viewholders.PhotoGridViewHolder
 import com.yutasuz.photo.viewholders.SearchViewHolder
 
-class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PhotoListAdapter(context: Context, private val itemList: List<Item>) :
+    RecyclerView.Adapter<PhotoListAdapter.CleanableViewHolder>() {
+
+    abstract class CleanableViewHolder(view: View) :
+        RecyclerView.ViewHolder(view) {
+
+        abstract fun onDetachedFromRecyclerView()
+        abstract fun onViewDetachedFromWindow()
+
+        abstract fun onViewRecycled()
+    }
 
     enum class Type {
 
@@ -22,7 +32,7 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
                 PhotoGridViewHolder(inflater, parent)
         };
 
-        abstract fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): RecyclerView.ViewHolder
+        abstract fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup): CleanableViewHolder
     }
 
     interface Item {
@@ -48,7 +58,7 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
 
     private val layoutInflater = LayoutInflater.from(context)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CleanableViewHolder {
         return Type.values()[viewType].createViewHolder(layoutInflater, parent)
     }
 
@@ -56,7 +66,7 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
 
     override fun getItemViewType(position: Int) = itemList[position].type.ordinal
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CleanableViewHolder, position: Int) {
 
         val item = itemList[position]
         val viewType = item.type
@@ -73,6 +83,26 @@ class PhotoListAdapter(context: Context, val itemList: List<Item>) : RecyclerVie
 
                 holder.onBind(item.title, item.imageUrl, item.onClickListener)
             }
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: CleanableViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onViewDetachedFromWindow()
+    }
+
+    override fun onViewRecycled(holder: CleanableViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+
+        val size = itemCount
+        0.until(size).forEach { index ->
+            val viewHolder = recyclerView.findViewHolderForAdapterPosition(index) as CleanableViewHolder? ?: return
+            viewHolder.onDetachedFromRecyclerView()
         }
     }
 }
