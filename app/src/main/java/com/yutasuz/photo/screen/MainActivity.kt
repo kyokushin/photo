@@ -3,13 +3,12 @@ package com.yutasuz.photo.screen
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity;
 import com.yutasuz.photo.R
-import com.yutasuz.photo.screen.photolist.PhotoListContract
 import com.yutasuz.photo.screen.photolist.PhotoListFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.dsl.module.Module
 
-class MainActivity : AppCompatActivity(), PhotoListContract.ActivityView {
+class MainActivity : AppCompatActivity(), MainActivityView {
 
     private val module: Module = org.koin.dsl.module.applicationContext {
         factory {

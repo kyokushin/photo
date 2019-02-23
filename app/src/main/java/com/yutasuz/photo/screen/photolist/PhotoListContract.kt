@@ -1,14 +1,10 @@
 package com.yutasuz.photo.screen.photolist
 
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
+import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.Single
 
 interface PhotoListContract {
-
-    interface ActivityView {
-        fun showPhotoViewerFragment(imageUrl: String)
-        fun showPhotoSearchResultFragment(keyword: String)
-    }
 
     interface View {
         var presenter: Presenter?
@@ -23,7 +19,7 @@ interface PhotoListContract {
     }
 
     interface Presenter {
-        val activityView: ActivityView
+        val activityView: MainActivityView
         val view: View
         val repository: Repository
 

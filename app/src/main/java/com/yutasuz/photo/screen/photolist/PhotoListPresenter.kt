@@ -4,12 +4,13 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
+import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class PhotoListPresenter(
-    override val activityView: PhotoListContract.ActivityView,
+    override val activityView: MainActivityView,
     override val view: PhotoListContract.View,
     override val repository: PhotoListContract.Repository
 ) : PhotoListContract.Presenter {

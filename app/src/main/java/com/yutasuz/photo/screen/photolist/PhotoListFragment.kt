@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.R
+import com.yutasuz.photo.screen.MainActivityView
 import kotlinx.android.synthetic.main.fragment_photo_list.*
 
 class PhotoListFragment : Fragment(), PhotoListContract.View {
@@ -25,9 +26,9 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activity = activity as PhotoListContract.ActivityView?
+        val activity = activity as MainActivityView?
 
-        if(activity != null) {
+        if (activity != null) {
             presenter = PhotoListPresenter(activity, this, PhotoListRepository())
         }
     }
@@ -40,10 +41,13 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context = context ?: return
 
         presenter?.onViewCreated()
 
+        initView()
+    }
+
+    private fun initView() {
         fragment_top_recycler_view.apply {
             adapter = photoListAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -87,6 +91,6 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     }
 
     override fun hideRefresh() {
-        if(refresh.isRefreshing) refresh.isRefreshing = false
+        if (refresh.isRefreshing) refresh.isRefreshing = false
     }
 }
