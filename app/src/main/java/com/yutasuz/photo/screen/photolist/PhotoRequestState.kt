@@ -3,6 +3,11 @@ package com.yutasuz.photo.screen.photolist
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
 import io.reactivex.Single
 
+/**
+ * 写真のリスト表示画面のリクエストロジック
+ * 初期状態ではRecentを、検索キーワードが指定された場合はSearchのAPIを
+ * リクエストしながら同じFragmentを操作するので抽象化してまとめた
+ */
 class PhotoRequestState(val repository: PhotoListContract.Repository) {
 
     interface RequestState {
@@ -48,9 +53,13 @@ class PhotoRequestState(val repository: PhotoListContract.Repository) {
         }
 
     val result
-        get() = currentRequest.result
+        get() = currentRequest.result // get()実行時にcurrentRequestのresultを使いたいので代入していない
 
-    var requested = currentRequest.requested
+    var requested
+        get() = currentRequest.requested
+        set(value) {
+            currentRequest.requested = value
+        }
 
     fun request(page: Int) = currentRequest.request(page)
 
