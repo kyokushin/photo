@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.R
-import kotlinx.android.synthetic.main.fragment_top.*
+import kotlinx.android.synthetic.main.fragment_photo_list.*
 
 class PhotoListFragment : Fragment(), PhotoListContract.View {
 
@@ -34,7 +34,7 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter?.onCreateView()
-        return inflater.inflate(R.layout.fragment_top, container, false)
+        return inflater.inflate(R.layout.fragment_photo_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

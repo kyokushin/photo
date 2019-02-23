@@ -25,16 +25,13 @@ class PhotoListPresenter(
         }
     }
 
-
     private val compositeDisposable = CompositeDisposable()
-
 
     private val itemList = arrayListOf<PhotoListAdapter.Item>()
 
     private var pagination: Pagination? = null
 
     private val photoRequestState = PhotoRequestState(repository)
-
 
     init {
         val searchItem = PhotoListAdapter.Item.SearchItem(
