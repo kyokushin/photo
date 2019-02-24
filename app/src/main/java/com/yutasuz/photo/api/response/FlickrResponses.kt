@@ -34,7 +34,7 @@ class FlickrPhotoResponse(
 
     val imageUrlLarge: String?
         get() {
-            return createImageUrl()
+            return createImageUrl("b")
         }
 
     fun isInvalid() = (id == null || farm == null || server == null || secret == null)
