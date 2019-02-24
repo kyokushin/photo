@@ -9,9 +9,13 @@ import com.yutasuz.photo.screen.photolist.PhotoListRepository
 import com.yutasuz.photo.screen.viewer.ViewerContract
 import com.yutasuz.photo.screen.viewer.ViewerPresenter
 import com.yutasuz.photo.screen.viewer.ViewerRepository
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.android.startKoin
-import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 class PhotoApplication : Application() {
 
@@ -23,14 +27,15 @@ class PhotoApplication : Application() {
         startKoin(
             this, listOf(
                 photoListModule,
-                viewerModule
+                viewerModule,
+                flickrAPIModule
             )
         )
     }
 
     val photoListModule = module {
         factory<PhotoListContract.Presenter> { (acivityView: MainActivityView,
-                                                  view: PhotoListContract.View) ->
+                                                   view: PhotoListContract.View) ->
             PhotoListPresenter(acivityView, view, get())
         }
 
@@ -49,5 +54,24 @@ class PhotoApplication : Application() {
         }
     }
 
+    val flickrAPIModule = module {
+        single<FlickrAPI.FlickrService> { (apiKey: String) ->
+            val httpClient = OkHttpClient.Builder()
+                .addInterceptor(FlickrAPI.RequestInterceptor(apiKey))
+                .addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+                .addNetworkInterceptor(HttpLoggingInterceptor())
+                .build()
 
+            val retrofit = Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(FlickrAPI.BASE_URL)
+                .client(httpClient)
+                .build()
+
+            retrofit.create(FlickrAPI.FlickrService::class.java)
+        }
+    }
 }

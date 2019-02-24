@@ -26,7 +26,6 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
         fun create() = PhotoListFragment()
     }
 
-
     override val presenter: PhotoListContract.Presenter by inject {
         val activity = activity as MainActivityView? ?: throw RuntimeException("activity is null")
         parametersOf(activity, this)
