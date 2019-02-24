@@ -37,8 +37,7 @@ class ViewerPresenter(
     override fun onScaleChanged(scaleFactor: Float) {
         scale *= scaleFactor
         Log.d("onScaleChanged", "$scale $scaleFactor")
-        calcImagePosition()
-        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
+        setImageScaleAndPosition()
     }
 
     override fun onBitmapLoaded(bitmap: Bitmap?) {
@@ -46,18 +45,17 @@ class ViewerPresenter(
         view.setImageBitmap(bitmap)
         calcDefaultScale(bitmap)
         setDefaultImageScaleAndPosition()
-        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
+        setImageScaleAndPosition()
     }
 
     override fun onDoubleTaped() {
         setDefaultImageScaleAndPosition()
-        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
+        setImageScaleAndPosition()
     }
 
     override fun onScrolled(moveX: Float, moveY: Float) {
         moveImagePosition(-moveX, -moveY)
-        calcImagePosition()
-        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
+        setImageScaleAndPosition()
     }
 
     private fun calcDefaultScale(bitmap: Bitmap) {
@@ -73,7 +71,6 @@ class ViewerPresenter(
     private fun setDefaultImageScaleAndPosition() {
         scale = defaultScale
         resetImagePosition()
-        calcImagePosition()
     }
 
     private fun calcImagePosition() {
@@ -92,5 +89,10 @@ class ViewerPresenter(
     private fun resetImagePosition() {
         movedX = 0f
         movedY = 0f
+    }
+
+    private fun setImageScaleAndPosition(){
+        calcImagePosition()
+        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
     }
 }
