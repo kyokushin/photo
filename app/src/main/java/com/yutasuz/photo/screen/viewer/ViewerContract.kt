@@ -22,7 +22,8 @@ interface ViewerContract {
         val view: View
         val repository: Repository
 
-        fun onViewCreated()
+        fun onViewCreatedStart()
+        fun onViewCreatedEnd()
 
         fun onResume()
 

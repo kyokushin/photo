@@ -9,7 +9,10 @@ class ViewerPresenter(
 
     var scale: Float = 1.0f
 
-    override fun onViewCreated() {
+    override fun onViewCreatedStart() {
+    }
+
+    override fun onViewCreatedEnd() {
         val imageUrl = view.photoResponse?.imageUrlLarge ?: return
         view.setImageUrl(imageUrl)
     }

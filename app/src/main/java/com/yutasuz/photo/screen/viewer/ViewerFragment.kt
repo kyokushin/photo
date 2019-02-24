@@ -44,13 +44,14 @@ class ViewerFragment : Fragment(), ViewerContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_viewer, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.onViewCreated()
+        presenter.onViewCreatedStart()
         initView()
+        presenter.onViewCreatedEnd()
     }
 
     override fun onResume() {

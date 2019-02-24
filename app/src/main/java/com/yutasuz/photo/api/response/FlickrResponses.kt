@@ -34,14 +34,15 @@ class FlickrPhotoResponse(
 
     val imageUrlLarge: String?
         get() {
-            return createImageUrl("k")
+            return createImageUrl()
         }
 
     fun isInvalid() = (id == null || farm == null || server == null || secret == null)
 
-    private fun createImageUrl(sizeSuffix: String): String? {
+    private fun createImageUrl(sizeSuffix: String? = null): String? {
         if (isInvalid()) return null
-        return "https://farm$farm.staticflickr.com/$server/${id}_${secret}_$sizeSuffix.jpg"
+        val suffix = if(sizeSuffix != null) "_$sizeSuffix" else ""
+        return "https://farm$farm.staticflickr.com/$server/${id}_$secret$suffix.jpg"
     }
 
     constructor(source: Parcel) : this(
