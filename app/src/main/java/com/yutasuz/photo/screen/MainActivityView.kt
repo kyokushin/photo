@@ -1,6 +1,7 @@
 package com.yutasuz.photo.screen
 
+import com.yutasuz.photo.api.response.FlickrPhotoResponse
+
 interface MainActivityView {
-    fun showPhotoViewerFragment(imageUrl: String)
-    fun showPhotoSearchResultFragment(keyword: String)
+    fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse)
 }

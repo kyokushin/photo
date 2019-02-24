@@ -22,6 +22,8 @@ class ViewerFragment : Fragment(), ViewerContract.View {
 
     companion object {
 
+        const val TAG = "viewer"
+
         private const val ARG_PHOTO = "photo"
 
         fun create(photoResponse: FlickrPhotoResponse) = ViewerFragment().apply {
@@ -38,6 +40,7 @@ class ViewerFragment : Fragment(), ViewerContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        presenter = ViewerPresenter(this, ViewerRepository())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

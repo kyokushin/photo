@@ -128,15 +128,17 @@ class PhotoListPresenter(
 
         val items = photos.photo
             ?.filterNotNull()
-            ?.map {
-                val title = it.title ?: ""
-                val imageUrl = it.imageUrl ?: ""
-                val listener = if (imageUrl.isNotEmpty()) {
+            ?.map {photoResponse ->
+                val title = photoResponse.title ?: ""
+                val imageUrl = photoResponse.imageUrl ?: ""
+                val listener = if (photoResponse.isInvalid()) {
                     View.OnClickListener {
-                        activityView.showPhotoViewerFragment(imageUrl)
+
                     }
                 } else {
-                    View.OnClickListener { }
+                    View.OnClickListener {
+                        activityView.showPhotoViewerFragment(photoResponse)
+                    }
                 }
 
                 PhotoListAdapter.Item.PhotoGridItem(

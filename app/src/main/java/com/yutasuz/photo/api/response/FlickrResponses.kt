@@ -37,7 +37,7 @@ class FlickrPhotoResponse(
             return createImageUrl("k")
         }
 
-    private fun isInvalid() = (id == null || farm == null || server == null || secret == null)
+    fun isInvalid() = (id == null || farm == null || server == null || secret == null)
 
     private fun createImageUrl(sizeSuffix: String): String? {
         if (isInvalid()) return null

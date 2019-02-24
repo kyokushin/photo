@@ -1,8 +1,11 @@
 package com.yutasuz.photo.screen
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import com.yutasuz.photo.R
+import com.yutasuz.photo.api.response.FlickrPhotoResponse
 import com.yutasuz.photo.screen.photolist.PhotoListFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,9 +22,18 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        addOnBackPressedCallback {
+            if(supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStackImmediate()
+                return@addOnBackPressedCallback true
+            }
+            false
+        }
+
         initView()
         initFragment()
     }
+
 
     private fun initView() {
         setContentView(R.layout.activity_main)
@@ -29,19 +41,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     private fun initFragment() {
-        supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG) ?: run {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, PhotoListFragment.create(), PhotoListFragment.TAG)
-                .commitNow()
-        }
-
+        FragmentNavigator.showPhotoListFragment(supportFragmentManager)
     }
 
-    override fun showPhotoViewerFragment(imageUrl: String) {
-        FragmentNavigator.showPhotoViewerFragment(supportFragmentManager, imageUrl)
+    override fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse) {
+        FragmentNavigator.showPhotoViewerFragment(supportFragmentManager, photoResponse)
     }
 
-    override fun showPhotoSearchResultFragment(keyword: String) {
-        FragmentNavigator.showPhotoSearchResultFragment(supportFragmentManager, keyword)
-    }
+
 }
