@@ -8,6 +8,7 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.widget.ImageView
+import androidx.core.view.MotionEventCompat
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -126,16 +127,27 @@ class ViewerFragment : Fragment(), ViewerContract.View {
             }
 
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                return super.onScroll(e1, e2, distanceX, distanceY)
+                presenter.onScrolled(distanceX, distanceY)
+                return true
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                return true
             }
         }
 
         val gestureDetector = ScaleGestureDetector(context, gestureListener)
         val gestureDetector2 = GestureDetector(context, gestureListener2)
+            .apply {
+                setOnDoubleTapListener(gestureListener2)
+            }
         image.setOnTouchListener { v, event ->
-
-            gestureDetector.onTouchEvent(event)
-//            gestureDetector2.onTouchEvent(event)
+            if(event.pointerCount > 1) {
+                gestureDetector.onTouchEvent(event)
+            }
+            else {
+                gestureDetector2.onTouchEvent(event)
+            }
         }
     }
 }

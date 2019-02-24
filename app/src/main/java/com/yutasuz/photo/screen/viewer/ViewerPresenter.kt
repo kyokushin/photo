@@ -11,6 +11,8 @@ class ViewerPresenter(
 
     var scale: Float = 1.0f
     var defaultScale: Float = 1.0f
+    var movedX = 0f
+    var movedY = 0f
     var imagePositionX = 0f
     var imagePositionY = 0f
     var imageSize = Size(0, 0)
@@ -52,6 +54,12 @@ class ViewerPresenter(
         view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
     }
 
+    override fun onScrolled(moveX: Float, moveY: Float) {
+        moveImagePosition(-moveX, -moveY)
+        calcImagePosition()
+        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
+    }
+
     private fun calcDefaultScale(bitmap: Bitmap) {
         val size = view.getImageViewSize
 
@@ -64,14 +72,25 @@ class ViewerPresenter(
 
     private fun setDefaultImageScaleAndPosition() {
         scale = defaultScale
+        resetImagePosition()
         calcImagePosition()
     }
 
     private fun calcImagePosition() {
         val size = view.getImageViewSize
-        val imageX = (size.width - imageSize.width * scale) / 2
-        val imageY = (size.height - imageSize.height * scale) / 2
+        val imageX = (size.width - imageSize.width * scale) / 2 + movedX
+        val imageY = (size.height - imageSize.height * scale) / 2 + movedY
         imagePositionX = imageX
         imagePositionY = imageY
+    }
+
+    private fun moveImagePosition(moveX: Float, moveY: Float) {
+        movedX += moveX
+        movedY += moveY
+    }
+
+    private fun resetImagePosition() {
+        movedX = 0f
+        movedY = 0f
     }
 }

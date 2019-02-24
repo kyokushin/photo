@@ -34,6 +34,7 @@ interface ViewerContract {
         fun onScaleChanged(scaleFactor: Float)
 
         fun onDoubleTaped()
+        fun onScrolled(moveX: Float, moveY: Float)
 
         fun onBitmapLoaded(bitmap: Bitmap?)
     }
