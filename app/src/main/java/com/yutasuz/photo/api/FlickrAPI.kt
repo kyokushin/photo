@@ -60,5 +60,9 @@ object FlickrAPI {
         @GET("rest?method=flickr.photos.getRecent")
         fun getRecent(@Query("page") page: Int)
                 : Single<FlickrPhotosResultResponse>
+
+        @GET("rest?method=flickr.photos.getSizes")
+        fun getSize(@Query("photo_id") photoId: Int)
+                : Single<FlickrPhotosResultResponse>
     }
 }
