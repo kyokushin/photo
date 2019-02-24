@@ -18,7 +18,6 @@ class SearchViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup) :
     fun onBind(onQueryTextListener: SearchView.OnQueryTextListener) {
 
         itemView.search.setOnQueryTextListener(onQueryTextListener)
-
     }
 }
 
