@@ -107,6 +107,7 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         matrix.setScale(scale, scale)
         Log.d("scale", matrix.toString())
         image.imageMatrix = matrix
+        image.invalidate()
     }
 
     private fun initView() {

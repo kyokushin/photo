@@ -9,6 +9,7 @@ class ViewerPresenter(
 ) : ViewerContract.Presenter {
 
     var scale: Float = 1.0f
+    var defaultScale: Float = 1.0f
 
     override fun onViewCreatedStart() {
     }
@@ -31,13 +32,12 @@ class ViewerPresenter(
         scale *= scaleFactor
         Log.d("onScaleChanged", "$scale $scaleFactor")
         view.setImageScale(scale)
-        view.setImageBitmap(bitmap)
     }
 
-    var bitmap: Bitmap? = null
-
     override fun onBitmapLoaded(bitmap: Bitmap?) {
-        this.bitmap = bitmap
+        bitmap ?: return
+        view.setImageBitmap(bitmap)
+        calcDefaultScale(bitmap)
         setDefaultImageScale()
     }
 
@@ -45,17 +45,17 @@ class ViewerPresenter(
         setDefaultImageScale()
     }
 
-    private fun setDefaultImageScale(){
-        val bitmap = bitmap ?: return
-
+    private fun calcDefaultScale(bitmap: Bitmap) {
         val size = view.getImageViewSize
 
         val scaleWidth = size.width.toFloat() / bitmap.width
         val scaleHeight = size.height.toFloat() / bitmap.height
 
-        scale = if(scaleWidth < scaleHeight) scaleWidth else scaleHeight
+        defaultScale = if (scaleWidth < scaleHeight) scaleWidth else scaleHeight
+    }
 
+    private fun setDefaultImageScale() {
+        scale = defaultScale
         view.setImageScale(scale)
-        view.setImageBitmap(bitmap)
     }
 }
