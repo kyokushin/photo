@@ -2,6 +2,7 @@ package com.yutasuz.photo.screen.viewer
 
 import android.graphics.Bitmap
 import android.util.Log
+import android.util.Size
 
 class ViewerPresenter(
     override val view: ViewerContract.View,
@@ -10,6 +11,9 @@ class ViewerPresenter(
 
     var scale: Float = 1.0f
     var defaultScale: Float = 1.0f
+    var imagePositionX = 0f
+    var imagePositionY = 0f
+    var imageSize = Size(0, 0)
 
     override fun onViewCreatedStart() {
     }
@@ -31,18 +35,21 @@ class ViewerPresenter(
     override fun onScaleChanged(scaleFactor: Float) {
         scale *= scaleFactor
         Log.d("onScaleChanged", "$scale $scaleFactor")
-        view.setImageScale(scale)
+        calcImagePosition()
+        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
     }
 
     override fun onBitmapLoaded(bitmap: Bitmap?) {
         bitmap ?: return
         view.setImageBitmap(bitmap)
         calcDefaultScale(bitmap)
-        setDefaultImageScale()
+        setDefaultImageScaleAndPosition()
+        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
     }
 
     override fun onDoubleTaped() {
-        setDefaultImageScale()
+        setDefaultImageScaleAndPosition()
+        view.setImageScaleAndPosition(scale, imagePositionX, imagePositionY)
     }
 
     private fun calcDefaultScale(bitmap: Bitmap) {
@@ -52,10 +59,19 @@ class ViewerPresenter(
         val scaleHeight = size.height.toFloat() / bitmap.height
 
         defaultScale = if (scaleWidth < scaleHeight) scaleWidth else scaleHeight
+        imageSize = Size(bitmap.width, bitmap.height)
     }
 
-    private fun setDefaultImageScale() {
+    private fun setDefaultImageScaleAndPosition() {
         scale = defaultScale
-        view.setImageScale(scale)
+        calcImagePosition()
+    }
+
+    private fun calcImagePosition() {
+        val size = view.getImageViewSize
+        val imageX = (size.width - imageSize.width * scale) / 2
+        val imageY = (size.height - imageSize.height * scale) / 2
+        imagePositionX = imageX
+        imagePositionY = imageY
     }
 }

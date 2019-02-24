@@ -102,9 +102,10 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         image.setImageBitmap(bitmap)
     }
 
-    override fun setImageScale(scale: Float) {
+    override fun setImageScaleAndPosition(scale: Float, positionX: Float, positionY: Float) {
         val matrix = image.imageMatrix
         matrix.setScale(scale, scale)
+        matrix.postTranslate(positionX, positionY)
         Log.d("scale", matrix.toString())
         image.imageMatrix = matrix
         image.invalidate()
@@ -133,8 +134,8 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         val gestureDetector2 = GestureDetector(context, gestureListener2)
         image.setOnTouchListener { v, event ->
 
-            Log.d("pointer_count", "${event.pointerCount}")
             gestureDetector.onTouchEvent(event)
+//            gestureDetector2.onTouchEvent(event)
         }
     }
 }

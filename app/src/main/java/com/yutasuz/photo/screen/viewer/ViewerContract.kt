@@ -15,7 +15,7 @@ interface ViewerContract {
         fun setImageUrl(imageUrl:String)
         fun setImageBitmap(bitmap: Bitmap?)
 
-        fun setImageScale(scale: Float)
+        fun setImageScaleAndPosition(scale: Float, positionX: Float, positionY: Float)
     }
 
     interface Presenter {
