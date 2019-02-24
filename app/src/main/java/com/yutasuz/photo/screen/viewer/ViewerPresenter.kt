@@ -1,6 +1,7 @@
 package com.yutasuz.photo.screen.viewer
 
 import android.graphics.Bitmap
+import android.util.Log
 
 class ViewerPresenter(
     override val view: ViewerContract.View,
@@ -28,12 +29,24 @@ class ViewerPresenter(
 
     override fun onScaleChanged(scaleFactor: Float) {
         scale *= scaleFactor
+        Log.d("onScaleChanged", "$scale $scaleFactor")
         view.setImageScale(scale)
+        view.setImageBitmap(bitmap)
     }
 
-    override fun onBitmapLoaded(bitmap: Bitmap?) {
+    var bitmap: Bitmap? = null
 
-        bitmap ?: return
+    override fun onBitmapLoaded(bitmap: Bitmap?) {
+        this.bitmap = bitmap
+        setDefaultImageScale()
+    }
+
+    override fun onDoubleTaped() {
+        setDefaultImageScale()
+    }
+
+    private fun setDefaultImageScale(){
+        val bitmap = bitmap ?: return
 
         val size = view.getImageViewSize
 

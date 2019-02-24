@@ -4,11 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
-import android.view.LayoutInflater
-import android.view.ScaleGestureDetector
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
@@ -74,19 +72,19 @@ class ViewerFragment : Fragment(), ViewerContract.View {
     override val photoResponse
         get() = arguments?.getParcelable<FlickrPhotoResponse>(ARG_PHOTO)
 
-    private val target = object : Target{
+    private val target = object : Target {
         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+//            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
             image.setImageDrawable(placeHolderDrawable)
         }
 
         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+//            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
             image.setImageDrawable(errorDrawable)
         }
 
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-            image.scaleType = ImageView.ScaleType.MATRIX
+//            image.scaleType = ImageView.ScaleType.MATRIX
             presenter.onBitmapLoaded(bitmap)
         }
     }
@@ -106,7 +104,8 @@ class ViewerFragment : Fragment(), ViewerContract.View {
 
     override fun setImageScale(scale: Float) {
         val matrix = image.imageMatrix
-        matrix.postScale(scale, scale)
+        matrix.setScale(scale, scale)
+        Log.d("scale", matrix.toString())
         image.imageMatrix = matrix
     }
 
@@ -118,8 +117,22 @@ class ViewerFragment : Fragment(), ViewerContract.View {
             }
         }
 
+        val gestureListener2 = object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                presenter.onDoubleTaped()
+                return true
+            }
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                return super.onScroll(e1, e2, distanceX, distanceY)
+            }
+        }
+
         val gestureDetector = ScaleGestureDetector(context, gestureListener)
+        val gestureDetector2 = GestureDetector(context, gestureListener2)
         image.setOnTouchListener { v, event ->
+
+            Log.d("pointer_count", "${event.pointerCount}")
             gestureDetector.onTouchEvent(event)
         }
     }
