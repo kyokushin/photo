@@ -3,6 +3,8 @@ package com.yutasuz.photo.screen.photolist
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
 import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.Single
+import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
 /**
  * Flickrから取得した画像を一覧表示するためのクラス間でやり取りする内容を定義
@@ -11,7 +13,7 @@ import io.reactivex.Single
 interface PhotoListContract {
 
     interface View {
-        var presenter: Presenter?
+        val presenter: Presenter
 
         fun initAdapter(items: List<PhotoListAdapter.Item>)
 

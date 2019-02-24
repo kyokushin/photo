@@ -15,6 +15,8 @@ import com.squareup.picasso.Target
 import com.yutasuz.photo.R
 import com.yutasuz.photo.api.response.FlickrPhotoResponse
 import kotlinx.android.synthetic.main.fragment_viewer.*
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import java.lang.Exception
 
 /**
@@ -38,14 +40,13 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         }
     }
 
-    override lateinit var presenter: ViewerContract.Presenter
+    override val presenter: ViewerContract.Presenter by inject{ parametersOf(this) }
 
     override val getImageViewSize: Size
         get() = Size(image.width, image.height)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = ViewerPresenter(this, ViewerRepository())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

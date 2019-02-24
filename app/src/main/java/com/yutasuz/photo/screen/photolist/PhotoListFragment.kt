@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.R
 import com.yutasuz.photo.screen.MainActivityView
 import kotlinx.android.synthetic.main.fragment_photo_list.*
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * Flickr画像一覧のViewを担当するクラス
@@ -24,22 +26,20 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
         fun create() = PhotoListFragment()
     }
 
-    override var presenter: PhotoListContract.Presenter? = null
+
+    override val presenter: PhotoListContract.Presenter by inject {
+        val activity = activity as MainActivityView? ?: throw RuntimeException("activity is null")
+        parametersOf(activity, this)
+    }
 
     private lateinit var photoListAdapter: PhotoListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val activity = activity as MainActivityView?
-
-        if (activity != null) {
-            presenter = PhotoListPresenter(activity, this, PhotoListRepository())
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        presenter?.onCreateView()
+        presenter.onCreateView()
         return inflater.inflate(R.layout.fragment_photo_list, container, false)
     }
 
@@ -47,7 +47,7 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
         super.onViewCreated(view, savedInstanceState)
 
 
-        presenter?.onViewCreated()
+        presenter.onViewCreated()
 
         initView()
     }
@@ -59,7 +59,7 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
         }
 
         refresh.setOnRefreshListener {
-            presenter?.onRefresh()
+            presenter.onRefresh()
         }
 
     }
@@ -72,19 +72,19 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun onResume() {
         super.onResume()
 
-        presenter?.onResume()
+        presenter.onResume()
     }
 
     override fun onPause() {
         super.onPause()
 
-        presenter?.onPause()
+        presenter.onPause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        presenter?.onDestroyView()
+        presenter.onDestroyView()
     }
 
     override fun notifyDataSetChanged() {
