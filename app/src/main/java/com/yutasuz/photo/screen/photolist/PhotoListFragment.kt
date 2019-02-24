@@ -8,7 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yutasuz.photo.R
-import com.yutasuz.photo.screen.MainActivityView
+import com.yutasuz.photo.api.response.FlickrPhotoResponse
+import com.yutasuz.photo.screen.FragmentNavigator
 import kotlinx.android.synthetic.main.fragment_photo_list.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -27,8 +28,7 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     }
 
     override val presenter: PhotoListContract.Presenter by inject {
-        val activity = activity as MainActivityView? ?: throw RuntimeException("activity is null")
-        parametersOf(activity, this)
+        parametersOf(this)
     }
 
     private lateinit var photoListAdapter: PhotoListAdapter
@@ -97,4 +97,10 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun hideRefresh() {
         if (refresh.isRefreshing) refresh.isRefreshing = false
     }
+
+    override fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse) {
+        val activity = activity ?: return
+        FragmentNavigator.showPhotoViewerFragment(activity.supportFragmentManager, photoResponse)
+    }
+
 }

@@ -2,7 +2,6 @@ package com.yutasuz.photo
 
 import android.app.Application
 import com.yutasuz.photo.api.FlickrAPI
-import com.yutasuz.photo.screen.MainActivityView
 import com.yutasuz.photo.screen.photolist.PhotoListContract
 import com.yutasuz.photo.screen.photolist.PhotoListPresenter
 import com.yutasuz.photo.screen.photolist.PhotoListRepository
@@ -33,10 +32,9 @@ class PhotoApplication : Application() {
         )
     }
 
-    val photoListModule = module {
-        factory<PhotoListContract.Presenter> { (acivityView: MainActivityView,
-                                                   view: PhotoListContract.View) ->
-            PhotoListPresenter(acivityView, view, get())
+    val photoListModule = module(override = true) {
+        factory<PhotoListContract.Presenter> { (view: PhotoListContract.View) ->
+            PhotoListPresenter(view, get())
         }
 
         single<PhotoListContract.Repository> {

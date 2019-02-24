@@ -11,7 +11,7 @@ import com.yutasuz.photo.screen.photolist.PhotoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.dsl.module.Module
 
-class MainActivity : AppCompatActivity(), MainActivityView {
+class MainActivity : AppCompatActivity(){
 
     private val module: Module = org.koin.dsl.module.applicationContext {
         factory {
@@ -42,10 +42,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     private fun initFragment() {
         FragmentNavigator.showPhotoListFragment(supportFragmentManager)
-    }
-
-    override fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse) {
-        FragmentNavigator.showPhotoViewerFragment(supportFragmentManager, photoResponse)
     }
 
 

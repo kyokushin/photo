@@ -1,10 +1,8 @@
 package com.yutasuz.photo.screen.photolist
 
+import com.yutasuz.photo.api.response.FlickrPhotoResponse
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
-import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.Single
-import org.koin.dsl.module.applicationContext
-import org.koin.dsl.module.module
 
 /**
  * Flickrから取得した画像を一覧表示するためのクラス間でやり取りする内容を定義
@@ -22,10 +20,11 @@ interface PhotoListContract {
         fun notifyItemRangeChanged(positionStart: Int, itemCount: Int)
 
         fun hideRefresh()
+
+        fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse)
     }
 
     interface Presenter {
-        val activityView: MainActivityView
         val view: View
         val repository: Repository
 

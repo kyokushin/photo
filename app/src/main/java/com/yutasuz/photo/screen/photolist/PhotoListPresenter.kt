@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
-import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -15,7 +14,6 @@ import io.reactivex.schedulers.Schedulers
  * Viewからのイベント受付、Viewの操作、Repositoryを介したデータの取得などを主とする
  */
 class PhotoListPresenter(
-    override val activityView: MainActivityView,
     override val view: PhotoListContract.View,
     override val repository: PhotoListContract.Repository
 ) : PhotoListContract.Presenter {
@@ -144,7 +142,7 @@ class PhotoListPresenter(
                     }
                 } else {
                     View.OnClickListener {
-                        activityView.showPhotoViewerFragment(photoResponse)
+                        view.showPhotoViewerFragment(photoResponse)
                     }
                 }
 
