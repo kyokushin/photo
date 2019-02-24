@@ -5,13 +5,22 @@ import io.reactivex.Single
 
 /**
  * 写真のリスト表示画面のリクエストロジック
- * 初期状態ではRecentを、検索キーワードが指定された場合はSearchのAPIを
- * リクエストしながら同じFragmentを操作するので抽象化してまとめた
+ * Presenterからリクエストロジックを分離した
+ *
+ * 同じFragmentから初期状態ではRecentのAPIを、検索キーワードが指定された場合はSearchのAPIを
+ * リクエストするので抽象化してまとめた
+ *
+ * インスタンスに保持するだけの簡単なキャッシュを備えている
  */
 class PhotoRequestState(val repository: PhotoListContract.Repository) {
 
+    /**
+     * リクエスト処理を抽象化したinterface
+     */
     interface RequestState {
+        //リクエスト済みか否か
         var requested: Boolean
+        // リクエスト結果を保持する簡単なキャッシュ。再表示時に使う
         val result: ArrayList<PhotoListAdapter.Item>
 
         fun request(page: Int): Single<FlickrPhotosResultResponse>

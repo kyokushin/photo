@@ -11,6 +11,11 @@ import com.yutasuz.photo.R
 import com.yutasuz.photo.screen.MainActivityView
 import kotlinx.android.synthetic.main.fragment_photo_list.*
 
+/**
+ * Flickr画像一覧のViewを担当するクラス
+ * Presenterへのイベント伝達、Presenterから操作されることを主とする
+ * ロジックはPresenterへ集約している
+ */
 class PhotoListFragment : Fragment(), PhotoListContract.View {
 
     companion object {

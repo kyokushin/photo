@@ -4,6 +4,11 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.util.Size
 
+/**
+ * 画像表示のPresenterを担当するクラス
+ * ロジックを担当する
+ * Viewからのイベント受付、Viewの操作、Repositoryを介したデータの取得などを主とする
+ */
 class ViewerPresenter(
     override val view: ViewerContract.View,
     override val repository: ViewerContract.Repository
@@ -58,6 +63,9 @@ class ViewerPresenter(
         setImageScaleAndPosition()
     }
 
+    /**
+     * 画像表示のデフォルトのスケールを計算する
+     */
     private fun calcDefaultScale(bitmap: Bitmap) {
         val size = view.getImageViewSize
 
@@ -68,11 +76,17 @@ class ViewerPresenter(
         imageSize = Size(bitmap.width, bitmap.height)
     }
 
+    /**
+     * 画像表示のデフォルト値を設定する
+     */
     private fun setDefaultImageScaleAndPosition() {
         scale = defaultScale
         resetImagePosition()
     }
 
+    /**
+     * これまでのスケールと移動量から現在位置を再計算する
+     */
     private fun calcImagePosition() {
         val size = view.getImageViewSize
         val imageX = (size.width - imageSize.width * scale) / 2 + movedX

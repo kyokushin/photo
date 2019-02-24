@@ -17,6 +17,12 @@ import com.yutasuz.photo.api.response.FlickrPhotoResponse
 import kotlinx.android.synthetic.main.fragment_viewer.*
 import java.lang.Exception
 
+/**
+ * 画像表示のViewを担当するクラス
+ *
+ * Presenterへのイベント伝達、Presenterから操作されることを主とする
+ * ロジックはPresenterへ集約している
+ */
 class ViewerFragment : Fragment(), ViewerContract.View {
 
     companion object {
@@ -73,19 +79,23 @@ class ViewerFragment : Fragment(), ViewerContract.View {
     override val photoResponse
         get() = arguments?.getParcelable<FlickrPhotoResponse>(ARG_PHOTO)
 
+    /**
+     * 画像データ取得後に表示するスケールを計算するためにTargetを使って間接的に画像表示をしている
+     */
     private val target = object : Target {
         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-//            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
             image.setImageDrawable(placeHolderDrawable)
         }
 
         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-//            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
             image.setImageDrawable(errorDrawable)
         }
 
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-//            image.scaleType = ImageView.ScaleType.MATRIX
+            image.scaleType = ImageView.ScaleType.MATRIX
+            //BitmapはPresenterへ渡し、表示サイズの計算を行う
             presenter.onBitmapLoaded(bitmap)
         }
     }
@@ -113,6 +123,8 @@ class ViewerFragment : Fragment(), ViewerContract.View {
     }
 
     private fun initView() {
+
+        //ジェスチャーの設定
         val gestureListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
                 presenter.onScaleChanged(detector?.scaleFactor ?: 1.0f)

@@ -4,6 +4,10 @@ import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
 import com.yutasuz.photo.screen.MainActivityView
 import io.reactivex.Single
 
+/**
+ * Flickrから取得した画像を一覧表示するためのクラス間でやり取りする内容を定義
+ */
+
 interface PhotoListContract {
 
     interface View {

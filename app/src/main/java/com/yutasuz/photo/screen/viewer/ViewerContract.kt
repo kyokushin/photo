@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.util.Size
 import com.yutasuz.photo.api.response.FlickrPhotoResponse
 
+/**
+ * Flickrの画像を表示するためのクラス間でやり取りする内容を定義
+ */
 interface ViewerContract {
 
     interface View {

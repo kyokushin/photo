@@ -9,6 +9,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
+/**
+ * Flickr画像一覧のPresenterを担当するクラス
+ * ロジックを担当するクラス
+ * Viewからのイベント受付、Viewの操作、Repositoryを介したデータの取得などを主とする
+ */
 class PhotoListPresenter(
     override val activityView: MainActivityView,
     override val view: PhotoListContract.View,
@@ -35,6 +40,7 @@ class PhotoListPresenter(
     private val photoRequestState = PhotoRequestState(repository)
 
     init {
+        //検索ボックスの作成と設定
         val searchItem = PhotoListAdapter.Item.SearchItem(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -81,6 +87,7 @@ class PhotoListPresenter(
     }
 
     private fun requestFirstPageIfNotRequested() {
+        //リクエスト済み かつ キャッシュがあればそれを表示する
         if (photoRequestState.requested){
             removeNotFixItems()
             if(photoRequestState.hasResult()){
