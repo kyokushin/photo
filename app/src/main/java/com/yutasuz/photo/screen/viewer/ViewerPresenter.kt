@@ -27,6 +27,7 @@ class ViewerPresenter(
 
     override fun onViewCreatedEnd() {
         val imageUrl = view.photoResponse?.imageUrlLarge ?: return
+        view.showProgress()
         view.setImageUrl(imageUrl)
     }
 
@@ -51,6 +52,12 @@ class ViewerPresenter(
         calcDefaultScale(bitmap)
         setDefaultImageScaleAndPosition()
         setImageScaleAndPosition()
+
+        view.hideProgress()
+    }
+
+    override fun onBitmapLoadFailed() {
+        view.hideProgress()
     }
 
     override fun onDoubleTaped() {

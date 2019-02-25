@@ -19,6 +19,9 @@ interface ViewerContract {
         fun setImageBitmap(bitmap: Bitmap?)
 
         fun setImageScaleAndPosition(scale: Float, positionX: Float, positionY: Float)
+
+        fun showProgress()
+        fun hideProgress()
     }
 
     interface Presenter {
@@ -40,6 +43,7 @@ interface ViewerContract {
         fun onScrolled(moveX: Float, moveY: Float)
 
         fun onBitmapLoaded(bitmap: Bitmap?)
+        fun onBitmapLoadFailed()
     }
 
     interface Repository {

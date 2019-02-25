@@ -92,6 +92,7 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
             image.scaleType = ImageView.ScaleType.CENTER_INSIDE
             image.setImageDrawable(errorDrawable)
+            presenter.onBitmapLoadFailed()
         }
 
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
@@ -121,6 +122,14 @@ class ViewerFragment : Fragment(), ViewerContract.View {
         Log.d("scale", matrix.toString())
         image.imageMatrix = matrix
         image.invalidate()
+    }
+
+    override fun showProgress() {
+        progress.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        progress.visibility = View.GONE
     }
 
     private fun initView() {
