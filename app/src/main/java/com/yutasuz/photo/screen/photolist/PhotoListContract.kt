@@ -19,6 +19,7 @@ interface PhotoListContract {
 
         fun notifyItemRangeChanged(positionStart: Int, itemCount: Int)
 
+        fun showRefresh()
         fun hideRefresh()
 
         fun showPhotoViewerFragment(photoResponse: FlickrPhotoResponse)

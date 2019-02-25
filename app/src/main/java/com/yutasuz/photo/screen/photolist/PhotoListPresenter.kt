@@ -100,6 +100,7 @@ class PhotoListPresenter(
     }
 
     private fun requestFirstPage() {
+        view.showRefresh()
         request(1)
     }
 
