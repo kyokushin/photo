@@ -13,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
  * ロジックを担当するクラス
  * Viewからのイベント受付、Viewの操作、Repositoryを介したデータの取得などを主とする
  */
-class PhotoListPresenter(
+open class PhotoListPresenter(
     override val view: PhotoListContract.View,
     override val repository: PhotoListContract.Repository
 ) : PhotoListContract.Presenter {
