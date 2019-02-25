@@ -32,6 +32,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.core:core-ktx:1.1.0-alpha04'
+    implementation 'androidx.fragment:fragment:1.1.0-alpha04'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.1.0-alpha03'
 
@@ -49,7 +50,6 @@ dependencies {
 
     debugImplementation 'androidx.test:core:1.1.0'
     debugImplementation 'androidx.test:runner:1.1.0'
-    implementation 'androidx.fragment:fragment:1.1.0-alpha04'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha04'
 
     testImplementation 'androidx.test:core:1.1.0'
@@ -61,16 +61,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-//    androidTestImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha04'
     androidTestImplementation ("org.koin:koin-test:1.0.2") { exclude group: 'org.mockito' }
-    androidTestImplementation "org.mockito:mockito-core:2.24.5"
     androidTestImplementation "org.mockito:mockito-android:2.24.5"
-//    androidTestImplementation 'org.koin:koin-test:1.0.2'
-
-//    kaptAndroidTest "org.mockito:mockito-core:2.24.5"
-//    kaptAndroidTest "org.mockito:mockito-android:2.24.5"
-//    kaptAndroidTest ("org.koin:koin-test:1.0.2") { exclude group: 'org.mockito' }
-
-    androidTestImplementation'com.google.dexmaker:dexmaker:1.2'
-    androidTestImplementation'com.google.dexmaker:dexmaker-mockito:1.2'
 }

@@ -11,6 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.yutasuz.photo.screen.MainActivity
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module.module
@@ -23,9 +24,19 @@ import org.koin.test.KoinTest
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(MockitoJUnitRunner::class)
 class PhotoListFragmentTest : KoinTest {
+
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun start() {
+            MockitoAnnotations.initMocks(this)
+        }
+    }
 
     @Before
     fun before() {
