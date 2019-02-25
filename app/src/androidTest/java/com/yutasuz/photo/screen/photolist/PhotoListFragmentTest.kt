@@ -1,29 +1,17 @@
 package com.yutasuz.photo.screen.photolist
 
 import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.FragmentScenario.launchInContainer
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
-import com.yutasuz.photo.screen.MainActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.closeKoin
 import org.koin.standalone.StandAloneContext.loadKoinModules
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.get
 import org.koin.test.KoinTest
-import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -42,12 +30,10 @@ class PhotoListFragmentTest : KoinTest {
     fun before() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) {(view: PhotoListContract.View) ->
-//                mock(PhotoListContract.Presenter::class.java)
                 spy(PhotoListPresenter(view, get()))
             }
 
             single<PhotoListContract.Repository>(override = true) {
-//                mock(PhotoListContract.Repository::class.java)
                 spy(PhotoListRepository())
             }
         }))
@@ -55,7 +41,6 @@ class PhotoListFragmentTest : KoinTest {
 
     @After
     fun after() {
-//        stopKoin()
     }
 
     @Test
