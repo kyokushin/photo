@@ -28,7 +28,8 @@ class PhotoApplication : Application() {
             this, listOf(
                 photoListModule,
                 viewerModule,
-                flickrAPIModule
+                flickrAPIModule,
+                schedulersModule
             )
         )
     }
@@ -75,6 +76,12 @@ class PhotoApplication : Application() {
                 .build()
 
             retrofit.create(FlickrAPI.FlickrService::class.java)
+        }
+    }
+
+    val schedulersModule = module {
+        single<BaseSchedulers>{
+            AppSchedulers()
         }
     }
 }

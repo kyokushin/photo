@@ -11,19 +11,15 @@ import io.reactivex.Single
 class PhotoListRepository: PhotoListContract.Repository {
 
     override fun getFlickrSearch(text: String, page: Int): Single<FlickrPhotosResultResponse> {
-        FlickrAPI.service?.let{
+        FlickrAPI.service.let{
             return it.getSearch(text, page)
         }
-
-        return Single.just(FlickrPhotosResultResponse(null))
     }
 
     override fun getFlickrRecent(page: Int): Single<FlickrPhotosResultResponse> {
-        FlickrAPI.service?.let{
+        FlickrAPI.service.let{
             return it.getRecent(page)
         }
-
-        return Single.just(FlickrPhotosResultResponse(null))
     }
 
 }

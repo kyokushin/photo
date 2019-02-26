@@ -49,38 +49,6 @@ class PhotoListFragmentTest : KoinTest {
     }
 
     @Test
-    fun PhotoListFragment起動時にPresenterがrequestを呼ぶ() {
-        loadKoinModules(listOf(module(override = true) {
-            factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view), recordPrivateCalls = true)
-            }
-
-            factory(override = true) {
-                val photoRequestState = spyk(PhotoRequestState(get()), recordPrivateCalls = true)
-                photoRequestState
-            }
-
-            single<PhotoListContract.Repository>(override = true) {
-                spyk(PhotoListRepository(), recordPrivateCalls = true)
-            }
-        }))
-
-        val scenario = ActivityScenario.launch(MainActivity::class.java)
-
-        scenario.onActivity { activity ->
-            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
-                fragment as PhotoListFragment
-                val mockPresenter = fragment.presenter
-                verifyOrder {
-                    mockPresenter["requestFirstPageIfNotRequested"]()
-                    mockPresenter["requestFirstPage"]()
-                    mockPresenter["request"](1)
-                }
-            }
-        }
-    }
-
-    @Test
     fun PhotoListFragment起動時にリクエスト済みならPresenterがrequestを呼ばない() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->

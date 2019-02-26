@@ -3,6 +3,7 @@ package com.yutasuz.photo.screen.photolist
 import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import com.yutasuz.photo.BaseSchedulers
 import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -39,6 +40,8 @@ class PhotoListPresenter(
     private var pagination: Pagination? = null
 
     private val photoRequestState: PhotoRequestState by inject()
+
+    private val schedulers: BaseSchedulers by inject()
 
     init {
         //検索ボックスの作成と設定
@@ -113,10 +116,10 @@ class PhotoListPresenter(
     }
 
     private fun request(page: Int){
-        val single = photoRequestState.request(page) ?: return
+        val single = photoRequestState.request(page)
         val disposable = single
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
             .subscribe(
                 {
                     receiveResponse(it)
