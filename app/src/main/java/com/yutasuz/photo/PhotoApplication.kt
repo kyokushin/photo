@@ -32,7 +32,7 @@ class PhotoApplication : Application() {
         )
     }
 
-    val photoListModule = module(override = true) {
+    val photoListModule = module {
         factory<PhotoListContract.Presenter> { (view: PhotoListContract.View) ->
             PhotoListPresenter(view, get())
         }
