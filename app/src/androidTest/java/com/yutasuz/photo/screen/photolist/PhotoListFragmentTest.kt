@@ -1,11 +1,10 @@
 package com.yutasuz.photo.screen.photolist
 
-import androidx.fragment.app.testing.launchFragment
+import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.yutasuz.photo.screen.MainActivity
 import io.mockk.*
-import org.junit.*
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.loadKoinModules
@@ -13,9 +12,6 @@ import org.koin.test.KoinTest
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class PhotoListFragmentTest : KoinTest {
-
-    @get:Rule
-    val activityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
 
     @Test
     fun PhotoListFragment起動時にPresenterのonViewCreatedとonResumeが呼ばれる() {
@@ -35,16 +31,18 @@ class PhotoListFragmentTest : KoinTest {
             }
         }))
 
-        val activity = activityTestRule.launchActivity(null)
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let{ fragment ->
-            fragment as PhotoListFragment
-            val mockPresenter = fragment.presenter
-            verifySequence {
-                mockPresenter.onCreateView()
-                mockPresenter.onViewCreated()
-                mockPresenter.view
-                mockPresenter.onResume()
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
+                fragment as PhotoListFragment
+                val mockPresenter = fragment.presenter
+                verifySequence {
+                    mockPresenter.onCreateView()
+                    mockPresenter.onViewCreated()
+                    mockPresenter.view
+                    mockPresenter.onResume()
+                }
             }
         }
     }
@@ -66,15 +64,17 @@ class PhotoListFragmentTest : KoinTest {
             }
         }))
 
-        val activity = activityTestRule.launchActivity(null)
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let{ fragment ->
-            fragment as PhotoListFragment
-            val mockPresenter = fragment.presenter
-            verifyOrder {
-                mockPresenter["requestFirstPageIfNotRequested"]()
-                mockPresenter["requestFirstPage"]()
-                mockPresenter["request"](1)
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
+                fragment as PhotoListFragment
+                val mockPresenter = fragment.presenter
+                verifyOrder {
+                    mockPresenter["requestFirstPageIfNotRequested"]()
+                    mockPresenter["requestFirstPage"]()
+                    mockPresenter["request"](1)
+                }
             }
         }
     }
@@ -98,18 +98,21 @@ class PhotoListFragmentTest : KoinTest {
             }
         }))
 
-        val activity = activityTestRule.launchActivity(null)
 
-        activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let{ fragment ->
-            fragment as PhotoListFragment
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
 
-            val mockPresenter = fragment.presenter
-            verify(exactly = 1){
-                mockPresenter["requestFirstPageIfNotRequested"]()
-            }
-            verify(exactly = 0){
-                mockPresenter["request"](1)
-                mockPresenter["requestFirstPage"]()
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
+                fragment as PhotoListFragment
+
+                val mockPresenter = fragment.presenter
+                verify(exactly = 1) {
+                    mockPresenter["requestFirstPageIfNotRequested"]()
+                }
+                verify(exactly = 0) {
+                    mockPresenter["request"](1)
+                    mockPresenter["requestFirstPage"]()
+                }
             }
         }
     }
