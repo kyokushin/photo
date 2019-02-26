@@ -66,10 +66,11 @@ class PhotoListFragmentTest : KoinTest {
             }
         }))
 
-        val scenario = launchFragment<PhotoListFragment>()
+        val activity = activityTestRule.launchActivity(null)
 
-        scenario.onFragment {
-            val mockPresenter = it.presenter
+        activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let{ fragment ->
+            fragment as PhotoListFragment
+            val mockPresenter = fragment.presenter
             verifyOrder {
                 mockPresenter["requestFirstPageIfNotRequested"]()
                 mockPresenter["requestFirstPage"]()
@@ -97,10 +98,12 @@ class PhotoListFragmentTest : KoinTest {
             }
         }))
 
-        val scenario = launchFragment<PhotoListFragment>()
+        val activity = activityTestRule.launchActivity(null)
 
-        scenario.onFragment {
-            val mockPresenter = it.presenter
+        activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let{ fragment ->
+            fragment as PhotoListFragment
+
+            val mockPresenter = fragment.presenter
             verify(exactly = 1){
                 mockPresenter["requestFirstPageIfNotRequested"]()
             }
