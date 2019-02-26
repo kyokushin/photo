@@ -8,7 +8,7 @@ import io.reactivex.Single
  * データの入出力を担当する
  * ロジックは含まず、単純な入出力のみを担当する
  */
-open class PhotoListRepository: PhotoListContract.Repository {
+class PhotoListRepository: PhotoListContract.Repository {
 
     override fun getFlickrSearch(text: String, page: Int): Single<FlickrPhotosResultResponse> {
         FlickrAPI.service?.let{

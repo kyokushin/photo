@@ -1,6 +1,11 @@
 package com.yutasuz.photo.screen.photolist
 
-import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.launchFragment
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
@@ -8,35 +13,20 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.loadKoinModules
-import org.koin.standalone.get
 import org.koin.test.KoinTest
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class PhotoListFragmentTest : KoinTest {
 
     companion object {
         @JvmStatic
         @BeforeClass
         fun start() {
-            MockitoAnnotations.initMocks(this)
         }
     }
 
     @Before
     fun before() {
-        loadKoinModules(listOf(module(override = true) {
-            factory<PhotoListContract.Presenter>(override = true) {(view: PhotoListContract.View) ->
-                spy(PhotoListPresenter(view, get()))
-            }
-
-            single<PhotoListContract.Repository>(override = true) {
-                spy(PhotoListRepository())
-            }
-        }))
     }
 
     @After
@@ -44,17 +34,51 @@ class PhotoListFragmentTest : KoinTest {
     }
 
     @Test
-    fun test_onCreateView_call_presenter_onCreateView() {
+    fun PhotoListFragment起動時にPresenterのonViewCreatedとonResumeが呼ばれる() {
+        loadKoinModules(listOf(module(override = true) {
+            factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
+                spyk(PhotoListPresenter(view, get()))
+            }
 
-        val scenario = FragmentScenario.launch(PhotoListFragment::class.java)
+            single<PhotoListContract.Repository>(override = true) {
+                spyk(PhotoListRepository())
+            }
+        }))
+
+        val scenario = launchFragment<PhotoListFragment>()
 
         scenario.onFragment {
             val mockPresenter = it.presenter
-            verify(mockPresenter).onViewCreated()
+            verifySequence {
+                mockPresenter.onCreateView()
+                mockPresenter.onViewCreated()
+                mockPresenter.view
+                mockPresenter.onResume()
+            }
         }
+    }
 
-        val mockRepository: PhotoListContract.Repository = get()
+    @Test
+    fun PhotoListFragment起動時にPresenterがrequestを呼ぶ() {
+        loadKoinModules(listOf(module(override = true) {
+            factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
+                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+            }
 
+            single<PhotoListContract.Repository>(override = true) {
+                spyk(PhotoListRepository(), recordPrivateCalls = true)
+            }
+        }))
 
+        val scenario = launchFragment<PhotoListFragment>()
+
+        scenario.onFragment {
+            val mockPresenter = it.presenter
+            verify(exactly = 1) {
+                mockPresenter["requestFirstPageIfNotRequested"]()
+                mockPresenter["request"](1)
+                mockPresenter["requestFirstPage"]()
+            }
+        }
     }
 }
