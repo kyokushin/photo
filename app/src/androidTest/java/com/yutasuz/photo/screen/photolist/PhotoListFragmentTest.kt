@@ -156,4 +156,49 @@ class PhotoListFragmentTest : KoinTest {
         }
 
     }
+
+    @Test
+    fun PhotoListFragmentがActivityからDetatchされた時にPresenterのonPauseとonDestroyViewが呼ばれる() {
+        loadKoinModules(listOf(module(override = true) {
+            factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
+                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+            }
+
+            factory(override = true) {
+                val photoRequestState = spyk(PhotoRequestState(get()), recordPrivateCalls = true)
+
+                every{ photoRequestState.requested } returns true
+                photoRequestState
+            }
+
+            single<PhotoListContract.Repository>(override = true) {
+                spyk(PhotoListRepository(), recordPrivateCalls = true)
+            }
+        }))
+
+
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+        var mockPresenter: PhotoListContract.Presenter? = null
+        scenario.onActivity { activity ->
+
+            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
+                fragment as PhotoListFragment
+
+                mockPresenter = fragment.presenter
+
+                activity.supportFragmentManager.beginTransaction()
+                    .detach(fragment)
+                    .commit()
+            }
+
+        }
+
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+        verifyOrder {
+            mockPresenter?.onPause()
+            mockPresenter?.onDestroyView()
+        }
+
+    }
 }
