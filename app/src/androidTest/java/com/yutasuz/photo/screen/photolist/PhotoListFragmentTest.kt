@@ -1,5 +1,6 @@
 package com.yutasuz.photo.screen.photolist
 
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.yutasuz.photo.screen.MainActivity
@@ -115,5 +116,44 @@ class PhotoListFragmentTest : KoinTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun PhotoListFragment終了時にPresenterのonPauseとonDestroyViewが呼ばれる() {
+        loadKoinModules(listOf(module(override = true) {
+            factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
+                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+            }
+
+            factory(override = true) {
+                val photoRequestState = spyk(PhotoRequestState(get()), recordPrivateCalls = true)
+
+                every{ photoRequestState.requested } returns true
+                photoRequestState
+            }
+
+            single<PhotoListContract.Repository>(override = true) {
+                spyk(PhotoListRepository(), recordPrivateCalls = true)
+            }
+        }))
+
+
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+        var mockPresenter: PhotoListContract.Presenter? = null
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.findFragmentByTag(PhotoListFragment.TAG)?.let { fragment ->
+                fragment as PhotoListFragment
+
+                mockPresenter = fragment.presenter
+            }
+        }
+
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+        verifyOrder {
+            mockPresenter?.onPause()
+            mockPresenter?.onDestroyView()
+        }
+
     }
 }
