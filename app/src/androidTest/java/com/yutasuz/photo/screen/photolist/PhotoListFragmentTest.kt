@@ -19,7 +19,7 @@ class PhotoListFragmentTest : KoinTest {
 
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view, get()))
+                spyk(PhotoListPresenter(view))
             }
 
             factory(override = true) {
@@ -52,7 +52,7 @@ class PhotoListFragmentTest : KoinTest {
     fun PhotoListFragment起動時にPresenterがrequestを呼ぶ() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+                spyk(PhotoListPresenter(view), recordPrivateCalls = true)
             }
 
             factory(override = true) {
@@ -84,7 +84,7 @@ class PhotoListFragmentTest : KoinTest {
     fun PhotoListFragment起動時にリクエスト済みならPresenterがrequestを呼ばない() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+                spyk(PhotoListPresenter(view), recordPrivateCalls = true)
             }
 
             factory(override = true) {
@@ -122,7 +122,7 @@ class PhotoListFragmentTest : KoinTest {
     fun PhotoListFragment終了時にPresenterのonPauseとonDestroyViewが呼ばれる() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+                spyk(PhotoListPresenter(view), recordPrivateCalls = true)
             }
 
             factory(override = true) {
@@ -161,7 +161,7 @@ class PhotoListFragmentTest : KoinTest {
     fun PhotoListFragmentがActivityからDetatchされた時にPresenterのonPauseとonDestroyViewが呼ばれる() {
         loadKoinModules(listOf(module(override = true) {
             factory<PhotoListContract.Presenter>(override = true) { (view: PhotoListContract.View) ->
-                spyk(PhotoListPresenter(view, get()), recordPrivateCalls = true)
+                spyk(PhotoListPresenter(view), recordPrivateCalls = true)
             }
 
             factory(override = true) {

@@ -16,8 +16,7 @@ import org.koin.standalone.inject
  * Viewからのイベント受付、Viewの操作、Repositoryを介したデータの取得などを主とする
  */
 class PhotoListPresenter(
-    override val view: PhotoListContract.View,
-    override val repository: PhotoListContract.Repository
+    override val view: PhotoListContract.View
 ) : PhotoListContract.Presenter, KoinComponent {
 
     data class Pagination(
@@ -30,6 +29,8 @@ class PhotoListPresenter(
             return page < pages
         }
     }
+
+    override val repository: PhotoListContract.Repository by inject()
 
     private val compositeDisposable = CompositeDisposable()
 

@@ -45,7 +45,6 @@ class PhotoListFragment : Fragment(), PhotoListContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         presenter.onViewCreated()
 
         initView()

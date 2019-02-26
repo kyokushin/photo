@@ -35,7 +35,7 @@ class PhotoApplication : Application() {
 
     val photoListModule = module {
         factory<PhotoListContract.Presenter> { (view: PhotoListContract.View) ->
-            PhotoListPresenter(view, get())
+            PhotoListPresenter(view)
         }
 
         factory {
