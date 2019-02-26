@@ -5,6 +5,7 @@ import com.yutasuz.photo.api.FlickrAPI
 import com.yutasuz.photo.screen.photolist.PhotoListContract
 import com.yutasuz.photo.screen.photolist.PhotoListPresenter
 import com.yutasuz.photo.screen.photolist.PhotoListRepository
+import com.yutasuz.photo.screen.photolist.PhotoRequestState
 import com.yutasuz.photo.screen.viewer.ViewerContract
 import com.yutasuz.photo.screen.viewer.ViewerPresenter
 import com.yutasuz.photo.screen.viewer.ViewerRepository
@@ -35,6 +36,10 @@ class PhotoApplication : Application() {
     val photoListModule = module {
         factory<PhotoListContract.Presenter> { (view: PhotoListContract.View) ->
             PhotoListPresenter(view, get())
+        }
+
+        factory {
+            PhotoRequestState(get())
         }
 
         single<PhotoListContract.Repository> {

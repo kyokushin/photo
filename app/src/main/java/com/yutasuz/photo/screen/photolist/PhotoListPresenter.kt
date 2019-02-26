@@ -7,6 +7,8 @@ import com.yutasuz.photo.api.response.FlickrPhotosResultResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Flickr画像一覧のPresenterを担当するクラス
@@ -16,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
 class PhotoListPresenter(
     override val view: PhotoListContract.View,
     override val repository: PhotoListContract.Repository
-) : PhotoListContract.Presenter {
+) : PhotoListContract.Presenter, KoinComponent {
 
     data class Pagination(
         val page: Int,
@@ -35,7 +37,7 @@ class PhotoListPresenter(
 
     private var pagination: Pagination? = null
 
-    private val photoRequestState = PhotoRequestState(repository)
+    private val photoRequestState: PhotoRequestState by inject()
 
     init {
         //検索ボックスの作成と設定
